@@ -8,6 +8,7 @@ logger = logging.getLogger('Spectrogram')
 
 # Set level
 logger.setLevel(logging.INFO)
+#logger.setLevel(logging.ERROR)
 
 # Create handler
 handler = logging.StreamHandler()
