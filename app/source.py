@@ -6,6 +6,10 @@ import librosa
 
 from utils import logger
 
+WINDOW_SIZE = 1024
+
+HOP_SIZE = 370  # = total / fps
+
 class Source:
     def __init__(self,*args,**kwargs):
         self.audio = pyaudio.PyAudio()
@@ -20,6 +24,21 @@ class Source:
     
     def callback(self,data,frame_count,time_info,status):
         raise NotImplementedError("source.callback")
+    
+    def get(self):
+        if self.index + WINDOW_SIZE > self.total:
+            return None
+        a = self.index
+        b = self.index + WINDOW_SIZE
+        data = self.data[a:b]
+        self.index = a + HOP_SIZE
+        return np.array(data)
+    
+    def available(self):
+        samples = self.total - self.index
+        samples -= WINDOW_SIZE
+        available = math.ceil(samples/HOP_SIZE)
+        return max(0,available)
     
 SAMPLE_RATE = 22050
 BUFFER_SIZE = 1024
@@ -47,8 +66,22 @@ class File(Source):
     
 
 class Microphone(Source):
-    pass
-
+    def init(self):
+        # create audio stream
+        self.stream = self.audio.open(
+            format=pyaudio.paFloat32,
+            channels=1,
+            rate=SAMPLE_RATE,
+            input=True,
+            frames_per_buffer=BUFFER_SIZE,
+            stream_callback=self.callback
+        )
+    def callback(self,data,frame_count,time_info,status):
+        data = np.frombuffer(data,dtype=np.float32)
+        data = data.tolist()
+        self.data.extend(data)
+        self.total = len(self.data)
+        return None, pyaudio.paContinue
 
 
 if __name__ == '__main__':
