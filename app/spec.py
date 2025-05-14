@@ -63,13 +63,14 @@ class Spec:
             fragment_shader=self.FRAGMENT
         )
         vertices = np.array([
-            0,y,    0,0,
-            0,y+h,  0,1,
-            w,y+h,  1,1,
-            0,y,    0,0,
-            w,y+h,  1,1,
-            w,y,    1,0,
+            0,y,    0,1,
+            0,y+h,  0,0,
+            w,y+h,  1,0,
+            0,y,    0,1,
+            w,y+h,  1,0,
+            w,y,    1,1,
         ])
+
         vertices = vertices.astype('f4')
         buffer = self.ctx.buffer(vertices)
         self.vao = self.ctx.vertex_array(
