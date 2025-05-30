@@ -41,7 +41,7 @@ class Source:
 class File(Source):
     
     def init(self,filename):
-        # offset sets the 'delay' of audio file - file starts after 320 s.
+        # offset sets the 'delay' of audio file - file starts after 320 s. / offset=310
         self.data,_ = librosa.load(filename,sr=config.SAMPLE_RATE,offset=320)
         self.steam = self.audio.open(
             format=pyaudio.paFloat32,

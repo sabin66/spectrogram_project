@@ -8,7 +8,7 @@ import config
 
 class App(Window):
     def init(self):
-        self.source = File('./audio/aphex_test.mp3')
+        self.source = File('./audio/windowlicker.mp3')
         #self.source = Microphone()
 
         self.wave = Wave(self.ctx,0,0,config.WINDOW_WIDTH,200)
